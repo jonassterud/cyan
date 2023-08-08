@@ -1,0 +1,22 @@
+[package]
+name = "cyan"
+description = "Nostr social media client - Android / iOS / Linux / macOS / Windows"
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-alpha.6", features = [] }
+
+[dependencies]
+anyhow = { workspace = true, features = [] }
+tokio = { workspace = true, features = ["macros"] }
+serde_json = { version = "1.0", features = [] }
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "2.0.0-alpha.10", features = [] }
+
+[features]
+custom-protocol = [ "tauri/custom-protocol" ]
