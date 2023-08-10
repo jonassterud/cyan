@@ -1,0 +1,58 @@
+{
+  "build": {
+    "beforeBuildCommand": "pnpm build",
+    "beforeDevCommand": "pnpm dev",
+    "devPath": "http://localhost:5173",
+    "distDir": "../build"
+  },
+  "package": {
+    "productName": "cyan"
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "category": "SocialNetworking",
+      "copyright": "Copyright (c) 2023 Jonas Mathisrud Sterud",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [],
+      "icon": [
+        "ui/static/icons/32x32.png",
+        "ui/static/icons/128x128.png",
+        "ui/static/icons/128x128@2x.png",
+        "ui/static/icons/icon.icns",
+        "ui/static/icons/icon.ico"
+      ],
+      "identifier": "app.cyan",
+      "longDescription": "Nostr social media client - Android / iOS / Linux / macOS / Windows",
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "resources": [],
+      "shortDescription": "Nostr social media client",
+      "targets": "all",
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "cyan",
+        "width": 800
+      }
+    ]
+  }
+}

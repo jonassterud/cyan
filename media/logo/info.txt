@@ -1,0 +1,9 @@
+Font:
+font name: Condiment-Regular
+font link: https://fonts.google.com/specimen/Condiment
+
+Colors:
+bg-gradient-0: #395ECA
+bg-gradient-1: #848BD8
+icon: #ffffff
+      

@@ -1,0 +1,169 @@
+{
+	"name": "Ubuntu",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "devcontainer",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {},
+		"ghcr.io/devcontainers-contrib/features/postgres-asdf:1": {},
+		"ghcr.io/r3dpoint/devcontainer-features/tailwindcss-standalone-cli:1": {},
+		"ghcr.io/devcontainers/features/node:1": {}
+	},
+	"postCreateCommand": {
+        "tauri": "cargo install tauri-cli --version \"^2.0.0-alpha\"",
+        "sqlx": "cargo install sqlx-cli --no-default-features --features rustls,postgres"
+    },
+	"customizations": {
+		"vscode": {
+            "settings": {
+                /* Tailwind */
+                "files.associations": {
+                    ".gitignore": "ignore",
+                    ".eslintignore": "ignore",
+                    ".prettierignore": "ignore",
+                    "*.css": "tailwindcss"
+                },
+                "editor.quickSuggestions": {
+                    "strings": true
+                },
+                "tailwindCSS.classAttributes": [
+                    "class",
+                    "accent",
+                    "active",
+                    "aspectRatio",
+                    "background",
+                    "badge",
+                    "bgBackdrop",
+                    "bgDark",
+                    "bgDrawer",
+                    "bgLight",
+                    "blur",
+                    "border",
+                    "button",
+                    "buttonAction",
+                    "buttonBack",
+                    "buttonClasses",
+                    "buttonComplete",
+                    "buttonDismiss",
+                    "buttonNeutral",
+                    "buttonNext",
+                    "buttonPositive",
+                    "buttonTextCancel",
+                    "buttonTextConfirm",
+                    "buttonTextFirst",
+                    "buttonTextLast",
+                    "buttonTextNext",
+                    "buttonTextPrevious",
+                    "buttonTextSubmit",
+                    "caretClosed",
+                    "caretOpen",
+                    "chips",
+                    "color",
+                    "controlSeparator",
+                    "controlVariant",
+                    "cursor",
+                    "display",
+                    "element",
+                    "fill",
+                    "fillDark",
+                    "fillLight",
+                    "flex",
+                    "gap",
+                    "gridColumns",
+                    "height",
+                    "hover",
+                    "indent",
+                    "justify",
+                    "meter",
+                    "padding",
+                    "position",
+                    "regionBackdrop",
+                    "regionBody",
+                    "regionCaption",
+                    "regionCaret",
+                    "regionCell",
+                    "regionChildren",
+                    "regionCone",
+                    "regionContent",
+                    "regionControl",
+                    "regionDefault",
+                    "regionDrawer",
+                    "regionFoot",
+                    "regionFootCell",
+                    "regionFooter",
+                    "regionHead",
+                    "regionHeadCell",
+                    "regionHeader",
+                    "regionIcon",
+                    "regionInterface",
+                    "regionInterfaceText",
+                    "regionLabel",
+                    "regionLead",
+                    "regionLegend",
+                    "regionList",
+                    "regionNavigation",
+                    "regionPage",
+                    "regionPanel",
+                    "regionRowHeadline",
+                    "regionRowMain",
+                    "regionSummary",
+                    "regionSymbol",
+                    "regionTab",
+                    "regionTrail",
+                    "ring",
+                    "rounded",
+                    "select",
+                    "shadow",
+                    "slotDefault",
+                    "slotFooter",
+                    "slotHeader",
+                    "slotLead",
+                    "slotMessage",
+                    "slotMeta",
+                    "slotPageContent",
+                    "slotPageFooter",
+                    "slotPageHeader",
+                    "slotSidebarLeft",
+                    "slotSidebarRight",
+                    "slotTrail",
+                    "spacing",
+                    "text",
+                    "track",
+                    "width",
+                    "zIndex"
+                ],
+                /* Svelte */
+                "[svelte]": {
+                    "editor.defaultFormatter": "svelte.svelte-vscode"
+                },
+                "svelte.enable-ts-plugin": true,
+                /* Prettier */
+                "prettier.documentSelectors": [
+                    "**/*.svelte"
+                ],
+                /* Rust */
+                "lldb.executable": "/usr/bin/lldb",
+                "files.watcherExclude": {
+                    "**/target/**": true
+                },
+                /* Custom */
+                "editor.tabSize": 4,
+                "editor.detectIndentation": false,
+                "editor.insertSpaces": true,
+                "files.insertFinalNewline": true
+            },
+            "extensions": [
+				"rust-lang.rust-analyzer",
+				"tauri-apps.tauri-vscode",
+				"serayuzgur.crates",
+				"tamasfe.even-better-toml",
+				"mutantdino.resourcemonitor",
+				"vadimcn.vscode-lldb",
+				"svelte.svelte-vscode",
+				"bradlc.vscode-tailwindcss"
+			]
+		}
+	},
+	"forwardPorts": [5432]
+	// "remoteUser": "root"
+}

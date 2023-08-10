@@ -1,0 +1,11 @@
+[package]
+name = "cyan_lib"
+description = "Nostr social media client (library) - Android / iOS / Linux / macOS / Windows"
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]

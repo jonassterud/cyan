@@ -1,0 +1,22 @@
+name: CI
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+    workflow_dispatch:
+
+env:
+    CARGO_TERM_COLOR: always
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout (GitHub)
+              uses: actions/checkout@v2
+            - name: Build and run tests
+              uses: devcontainers/ci@v0.2
+              with:
+                runCmd: cargo build --workspace --verbose && cargo test --workspace --verbose
