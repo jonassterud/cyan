@@ -1,4 +1,6 @@
 ![Cyan](media/logo/png/cover.png)
+[![CI](https://github.com/jonassterud/cyan/actions/workflows/ci.yml/badge.svg)](https://github.com/jonassterud/cyan/actions/workflows/ci.yml)
+[![Release](https://github.com/jonassterud/cyan/actions/workflows/release.yml/badge.svg)](https://github.com/jonassterud/cyan/actions/workflows/release.yml)
 
 ## About
 
