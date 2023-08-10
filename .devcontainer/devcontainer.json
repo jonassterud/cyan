@@ -18,6 +18,9 @@
             "settings": {
                 /* Tailwind */
                 "files.associations": {
+                    ".gitignore": "ignore",
+                    ".eslintignore": "ignore",
+                    ".prettierignore": "ignore",
                     "*.css": "tailwindcss"
                 },
                 "editor.quickSuggestions": {
