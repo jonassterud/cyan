@@ -462,16 +462,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "cyan"
+name = "cyan_app"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "cyan_lib",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tokio",
 ]
+
+[[package]]
+name = "cyan_lib"
+version = "0.0.0"
 
 [[package]]
 name = "darling"
@@ -2397,10 +2402,6 @@ dependencies = [
  "quote",
  "syn 1.0.109",
 ]
-
-[[package]]
-name = "server"
-version = "0.0.0"
 
 [[package]]
 name = "servo_arc"

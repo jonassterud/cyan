@@ -1,6 +1,6 @@
 [package]
-name = "cyan"
-description = "Nostr social media client - Android / iOS / Linux / macOS / Windows"
+name = "cyan_app"
+description = "Nostr social media client (application) - Android / iOS / Linux / macOS / Windows"
 version.workspace = true
 authors.workspace = true
 license.workspace = true
@@ -12,6 +12,8 @@ rust-version.workspace = true
 tauri-build = { version = "2.0.0-alpha.6", features = [] }
 
 [dependencies]
+cyan_lib = { path = "../lib" }
+
 anyhow = { workspace = true, features = [] }
 tokio = { workspace = true, features = ["macros"] }
 serde_json = { version = "1.0", features = [] }

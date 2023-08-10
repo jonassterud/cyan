@@ -16,18 +16,13 @@
 	"customizations": {
 		"vscode": {
             "settings": {
-                "editor.tabSize": 4,
-                "editor.detectIndentation": false,
-                "editor.insertSpaces": true,
-                "files.insertFinalNewline": true,
-                "lldb.executable": "/usr/bin/lldb",
-                "files.watcherExclude": {
-                    "**/target/**": true
+                /* Tailwind */
+                "files.associations": {
+                    "*.css": "tailwindcss"
                 },
-                "svelte.enable-ts-plugin": true,
-                "prettier.documentSelectors": [
-                    "**/*.svelte"
-                ],
+                "editor.quickSuggestions": {
+                    "strings": true
+                },
                 "tailwindCSS.classAttributes": [
                     "class",
                     "accent",
@@ -133,7 +128,26 @@
                     "track",
                     "width",
                     "zIndex"
-                ]
+                ],
+                /* Svelte */
+                "[svelte]": {
+                    "editor.defaultFormatter": "svelte.svelte-vscode"
+                },
+                "svelte.enable-ts-plugin": true,
+                /* Prettier */
+                "prettier.documentSelectors": [
+                    "**/*.svelte"
+                ],
+                /* Rust */
+                "lldb.executable": "/usr/bin/lldb",
+                "files.watcherExclude": {
+                    "**/target/**": true
+                },
+                /* Custom */
+                "editor.tabSize": 4,
+                "editor.detectIndentation": false,
+                "editor.insertSpaces": true,
+                "files.insertFinalNewline": true
             },
             "extensions": [
 				"rust-lang.rust-analyzer",
@@ -142,7 +156,8 @@
 				"tamasfe.even-better-toml",
 				"mutantdino.resourcemonitor",
 				"vadimcn.vscode-lldb",
-				"svelte.svelte-vscode"
+				"svelte.svelte-vscode",
+				"bradlc.vscode-tailwindcss"
 			]
 		}
 	},

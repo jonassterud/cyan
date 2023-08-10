@@ -3,7 +3,7 @@
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     #[cfg(desktop)]
-    cyan::run().await?;
+    cyan_app::run().await?;
 
     Ok(())
 }
