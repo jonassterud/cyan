@@ -9,3 +9,8 @@ edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+tokio = { workspace = true, features = [] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true, features = [] }
+thiserror = { workspace = true, features = [] }
+secp256k1 = { workspace = true, features = ["serde", "rand-std", "bitcoin-hashes"] }
