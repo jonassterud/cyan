@@ -11,6 +11,9 @@ rust-version.workspace = true
 [dependencies]
 tokio = { workspace = true, features = [] }
 serde = { workspace = true, features = ["derive"] }
+serde_with = { workspace = true, features = [] }
 serde_json = { workspace = true, features = [] }
 thiserror = { workspace = true, features = [] }
-secp256k1 = { workspace = true, features = ["serde", "rand-std", "bitcoin-hashes"] }
+secp256k1 = { workspace = true, features = ["serde", "rand-std", "bitcoin-hashes-std"] }
+arrayref = { workspace = true, features = [] }
+hex = { workspace = true, features = [] }

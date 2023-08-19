@@ -7,4 +7,6 @@ pub enum Error {
     TryFromIntError(#[from] std::num::TryFromIntError),
     #[error("failed hashing / signing")]
     Secp256k1(#[from] secp256k1::Error),
+    #[error("wrong value (expected {expected:?}, found {found:?})")]
+    ExpectedFound { expected: String, found: String },
 }
