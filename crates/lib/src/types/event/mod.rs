@@ -66,7 +66,7 @@ impl UnsignedEvent {
 
     /// Get the serialized event data.
     fn get_id(&self) -> [u8; 32] {
-        let serialized_event = json!([0, format!("{:x?}", self.pubkey), self.created_at, self.kind, self.tags, self.content]).to_string();
+        let serialized_event = json!([0, hex::encode(&self.pubkey), self.created_at, self.kind, self.tags, self.content]).to_string();
         let serialized_event_hash = sha256::Hash::hash(serialized_event.as_bytes());
 
         *serialized_event_hash.as_ref() // I think this is OK?
