@@ -499,6 +499,7 @@ dependencies = [
 name = "cyan_lib"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "arrayref",
  "hex",
  "secp256k1",

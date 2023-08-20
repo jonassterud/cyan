@@ -1,16 +1,15 @@
+mod serde_custom;
+
 use crate::{error::Error, types::Tag};
 use secp256k1::{
     hashes::{sha256, Hash},
     schnorr::Signature,
     KeyPair, Secp256k1, XOnlyPublicKey,
 };
-use serde::Serialize;
 use serde_json::json;
-use serde_with::serde_as;
 
 /// The Nostr event object.
-#[serde_as]
-#[derive(Serialize)]
+#[derive(Debug)]
 pub struct Event {
     /// 32-bytes lowercase hex-encoded sha256 of the serialized event data.
     pub id: [u8; 32],
@@ -25,7 +24,6 @@ pub struct Event {
     /// Arbitrary string.
     pub content: String,
     /// 64-bytes hex of the signature of the sha256 hash of the serialized event data.
-    #[serde_as(as = "[_; 64]")]
     pub sig: [u8; 64],
 }
 
@@ -84,6 +82,20 @@ impl Event {
         Secp256k1::new().verify_schnorr(&signature, &message, &pubkey)?;
 
         Ok(())
+    }
+
+    /// Serialize as JSON.
+    pub fn serialize(&self) -> Result<String, Error> {
+        let json = serde_json::to_string(self)?;
+
+        Ok(json)
+    }
+
+    /// Deserialize from JSON.
+    pub fn deserialize(data: &[u8]) -> Result<Self, Error> {
+        let event = serde_json::from_slice(data)?;
+
+        Ok(event)
     }
 }
 
