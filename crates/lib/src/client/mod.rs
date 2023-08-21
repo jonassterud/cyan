@@ -1,6 +1,6 @@
 //! The user client.
 
-use crate::prelude::{Error, Event, Kind, Tag};
+use crate::prelude::*;
 use arrayref::array_ref;
 use secp256k1::{rand, KeyPair, Secp256k1};
 
@@ -34,11 +34,11 @@ impl Client {
     }
 
     /// Create a signed [`Event`].
-    pub fn create_event(&self, created_at: i64, kind: Kind, tags: Vec<Tag>, content: String) -> Result<Event, Error> {
+    pub fn create_event(&self, created_at: i64, kind: event::Kind, tags: Vec<event::Tag>, content: String) -> Result<event::Event, Error> {
         let tmp = self.keys.public_key().serialize();
         let pubkey = *array_ref![tmp, 1, 32];
 
-        let event = Event::try_new(&self.keys, pubkey, created_at, kind, tags, content)?;
+        let event = event::Event::try_new(&self.keys, pubkey, created_at, kind, tags, content)?;
 
         Ok(event)
     }

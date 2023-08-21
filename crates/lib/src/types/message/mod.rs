@@ -1,24 +1,27 @@
-mod serde_custom;
+//! The message object, and all of its children.
 
-use serde_json::Value;
+#![allow(non_camel_case_types)]
 
-use crate::error::Error;
-use crate::types::Event;
+mod serde;
+
+use crate::prelude::*;
+
+pub type SUBSCRIPTION_ID = String;
 
 /// The differente messages a client can send or receive.
 #[derive(Debug)]
 pub enum Message {
-    EVENT { subscription_id: String, event: Event },
-    REQ { subscription_id: String, filters: String },
-    CLOSE { subscription_id: String },
-    OK { event_id: i32, status: bool, message: String },
-    EOSE { subscription_id: i32 },
+    EVENT { subscription_id: SUBSCRIPTION_ID, event: event::Event },
+    REQ { subscription_id: SUBSCRIPTION_ID, filters: String },
+    CLOSE { subscription_id: SUBSCRIPTION_ID },
+    OK { event_id: event::ID, status: bool, message: String },
+    EOSE { subscription_id: SUBSCRIPTION_ID },
     NOTICE { message: String },
 }
 
 impl Message {
     /// Serialize as JSON.
-    pub fn serialize(&self) -> Result<Value, Error> {
+    pub fn serialize(&self) -> Result<serde_json::Value, Error> {
         let json = serde_json::to_value(self)?;
 
         Ok(json)

@@ -1,18 +1,23 @@
-//! Custom serialization / deserialization of [`Event`].
+//! Custom serialization / deserialization.
 //!
 //! This module is overly complicated to be honest.
 //! It would be much easier if strings were used instead of arrays.
 //! Maybe it's also possible to get rid of this whole module, and instead rely on
 //! macros and such in order to deserialize/serialize.
+//! Also, this could, maybe should, be split into different modules.
 
-use super::Event;
-use crate::types::{Kind, Tag};
+use super::{Event, Kind, Tag};
+
 use arrayref::array_ref;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
-use serde::ser::{Serialize, SerializeStruct, Serializer};
+use serde::ser::{self, Serialize, SerializeStruct, Serializer};
 use std::fmt;
 
-// Serialization
+struct EventVisitor;
+struct KindVisitor;
+struct TagVisitor;
+
+// Serialization of Event
 
 impl Serialize for Event {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -32,9 +37,7 @@ impl Serialize for Event {
     }
 }
 
-// Deserialization
-
-struct EventVisitor;
+// Deserialization of Event
 
 impl<'de> Visitor<'de> for EventVisitor {
     type Value = Event;
@@ -103,5 +106,95 @@ impl<'de> Deserialize<'de> for Event {
     {
         const FIELDS: &'static [&'static str] = &["id", "pubkey", "created_at", "kind", "tags", "content", "sig"];
         deserializer.deserialize_struct("Event", FIELDS, EventVisitor)
+    }
+}
+
+// Serialization of Kind
+
+impl Serialize for Kind {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_i32((*self) as i32)
+    }
+}
+
+// Deserialization of Kind
+
+impl<'de> Visitor<'de> for KindVisitor {
+    type Value = Kind;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("int Kind")
+    }
+
+    fn visit_i32<E>(self, value: i32) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Kind::try_from(value).map_err(de::Error::custom)
+    }
+}
+
+impl<'de> Deserialize<'de> for Kind {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_i32(KindVisitor)
+    }
+}
+
+// Serialization of Tag
+
+impl Serialize for Tag {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            Self::E { event_id, relay_url } => ("e", event_id, relay_url).serialize(serializer),
+            Self::P { pubkey, relay_url } => ("p", pubkey, relay_url).serialize(serializer),
+            Self::Other { data } => Err(ser::Error::custom(format!("unidentified tag: {:?}", data))),
+        }
+    }
+}
+
+// Deserialization of Tag
+
+impl<'de> Visitor<'de> for TagVisitor {
+    type Value = Tag;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        formatter.write_str("sequence Tag")
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::SeqAccess<'de>,
+    {
+        let variant: &str = seq.next_element()?.ok_or_else(|| de::Error::custom("missing tag variant"))?;
+
+        match variant {
+            _ => {
+                let mut data = String::new();
+
+                while let Ok(Some(next_value)) = seq.next_element::<&str>() {
+                    data += next_value;
+                }
+
+                Ok(Tag::Other { data })
+            }
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for Tag {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_seq(TagVisitor)
     }
 }

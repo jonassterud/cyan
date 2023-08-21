@@ -1,5 +1,3 @@
-mod serde_custom;
-
 /// A possible tag, attached to an event object.
 #[derive(Debug, Clone)]
 pub enum Tag {

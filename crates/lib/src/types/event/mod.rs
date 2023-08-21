@@ -1,9 +1,12 @@
-mod serde_custom;
+//! The event object, and all of its children.
 
-use crate::{
-    error::Error,
-    types::{Kind, Tag},
-};
+#![allow(non_camel_case_types)]
+
+mod kind;
+mod serde;
+mod tag;
+
+use crate::prelude::*;
 use secp256k1::{
     hashes::{sha256, Hash},
     schnorr::Signature,
@@ -11,42 +14,52 @@ use secp256k1::{
 };
 use serde_json::{json, Value};
 
+pub use kind::Kind;
+pub use tag::Tag;
+pub type ID = [u8; 32];
+pub type PUBKEY = [u8; 32];
+pub type CREATED_AT = i64;
+pub type KIND = Kind;
+pub type TAGS = Vec<Tag>;
+pub type CONTENT = String;
+pub type SIG = [u8; 64];
+
 /// The Nostr event object.
 #[derive(Debug)]
 pub struct Event {
     /// 32-bytes lowercase hex-encoded sha256 of the serialized event data.
-    pub id: [u8; 32],
+    pub id: ID,
     /// 32-bytes lowercase hex-encoded public key of the event creator.
-    pub pubkey: [u8; 32],
+    pub pubkey: PUBKEY,
     /// Unix timestamp in seconds,
-    pub created_at: i64,
+    pub created_at: CREATED_AT,
     /// Event kind.
-    pub kind: Kind,
+    pub kind: KIND,
     /// List of tags.
-    pub tags: Vec<Tag>,
+    pub tags: TAGS,
     /// Arbitrary string.
-    pub content: String,
+    pub content: CONTENT,
     /// 64-bytes hex of the signature of the sha256 hash of the serialized event data.
-    pub sig: [u8; 64],
+    pub sig: SIG,
 }
 
 /// The Nostr event object, except its missing `id` and `sig`.
 struct UnsignedEvent {
     /// 32-bytes lowercase hex-encoded public key of the event creator.
-    pub pubkey: [u8; 32],
+    pub pubkey: PUBKEY,
     /// Unix timestamp in seconds,
-    pub created_at: i64,
+    pub created_at: CREATED_AT,
     /// Event kind.
-    pub kind: Kind,
+    pub kind: KIND,
     /// List of tags.
-    pub tags: Vec<Tag>,
+    pub tags: TAGS,
     /// Arbitrary string.
-    pub content: String,
+    pub content: CONTENT,
 }
 
 impl Event {
     /// Create a signed event.
-    pub fn try_new(keys: &KeyPair, pubkey: [u8; 32], created_at: i64, kind: Kind, tags: Vec<Tag>, content: String) -> Result<Self, Error> {
+    pub fn try_new(keys: &KeyPair, pubkey: PUBKEY, created_at: CREATED_AT, kind: KIND, tags: TAGS, content: CONTENT) -> Result<Self, Error> {
         let unsigned_event = UnsignedEvent::new(pubkey, created_at, kind, tags, content);
         let id = unsigned_event.get_id();
         let sig = unsigned_event.get_sig(&id, keys)?;
@@ -108,7 +121,7 @@ impl Event {
 
 impl UnsignedEvent {
     /// Create a unsigned event.
-    fn new(pubkey: [u8; 32], created_at: i64, kind: Kind, tags: Vec<Tag>, content: String) -> Self {
+    fn new(pubkey: PUBKEY, created_at: CREATED_AT, kind: KIND, tags: TAGS, content: CONTENT) -> Self {
         Self {
             pubkey,
             created_at,
@@ -138,7 +151,7 @@ impl UnsignedEvent {
     }
 
     /// Sign the serialized event data with a private key.
-    fn get_sig(&self, id: &[u8; 32], keys: &KeyPair) -> Result<[u8; 64], Error> {
+    fn get_sig(&self, id: &ID, keys: &KeyPair) -> Result<[u8; 64], Error> {
         let message = secp256k1::Message::from_slice(id).unwrap();
         let sig = Secp256k1::new().sign_schnorr(&message, keys);
 

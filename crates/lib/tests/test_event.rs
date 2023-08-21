@@ -15,7 +15,7 @@ fn test_serde() {
     let event = helpers::create_example_event().unwrap();
 
     let serialized = event.serialize().unwrap();
-    let deserialized = Event::deserialize(serialized.clone()).unwrap();
+    let deserialized = event::Event::deserialize(serialized.clone()).unwrap();
 
     dbg!(serialized, deserialized);
 }

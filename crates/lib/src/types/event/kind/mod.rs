@@ -1,5 +1,3 @@
-mod serde_custom;
-
 use crate::error::Error;
 
 /// Event kind.

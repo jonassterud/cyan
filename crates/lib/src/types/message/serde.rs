@@ -1,12 +1,15 @@
-//! Custom serialization / deserialization of [`Message`].
+//! Custom serialization / deserialization.
 
 use super::Message;
-use crate::types::Event;
-use serde::de::Visitor;
-use serde::{de, ser::SerializeSeq, Deserialize, Deserializer, Serialize, Serializer};
+use crate::prelude::*;
+
+use serde::de::{self, Deserialize, Deserializer, Visitor};
+use serde::ser::{Serialize, SerializeSeq, Serializer};
 use std::fmt;
 
-// Serialization
+struct MessageVisitor;
+
+// Serialization of Message
 
 impl Serialize for Message {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -50,9 +53,7 @@ impl Serialize for Message {
     }
 }
 
-// Deserialization
-
-struct MessageVisitor;
+// Deserialization of Message
 
 impl<'de> Visitor<'de> for MessageVisitor {
     type Value = Message;
@@ -69,7 +70,7 @@ impl<'de> Visitor<'de> for MessageVisitor {
             match message_type.as_str() {
                 "EVENT" => Ok(Message::EVENT {
                     subscription_id: seq.next_element::<String>()?.ok_or(de::Error::missing_field("subscription_id"))?,
-                    event: Event::deserialize(seq.next_element::<serde_json::Value>()?.ok_or(de::Error::missing_field("event"))?).map_err(de::Error::custom)?,
+                    event: event::Event::deserialize(seq.next_element::<serde_json::Value>()?.ok_or(de::Error::missing_field("event"))?).map_err(de::Error::custom)?,
                 }),
                 "REQ" => Ok(Message::REQ {
                     subscription_id: seq.next_element()?.ok_or(de::Error::missing_field("subscription_id"))?,
