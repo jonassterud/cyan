@@ -1,6 +1,8 @@
-use crate::error::Error;
+//! The kind object.
 
-/// Event kind.
+use crate::prelude::*;
+
+/// The event kind.
 #[derive(Debug, Clone, Copy)]
 #[repr(i32)]
 pub enum Kind {
