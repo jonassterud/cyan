@@ -14,6 +14,13 @@ Use [convential commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
 
 Check out [ARCHITECTURE](ARCHITECTURE.md) for an explanation of how everything works together.
 
+### GitHub workflow
+1. Create issue (with milestone, if relevant)
+2. Link branch to issue (without milestone)
+3. Create pull request
+4. Squash merge - the issue will close
+
+
 
 ### Useful resources
 * [Tauri (beta)](https://beta.tauri.app/2/guide/)
