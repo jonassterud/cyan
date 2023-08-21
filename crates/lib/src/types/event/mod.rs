@@ -9,7 +9,7 @@ use secp256k1::{
     schnorr::Signature,
     KeyPair, Secp256k1, XOnlyPublicKey,
 };
-use serde_json::json;
+use serde_json::{json, Value};
 
 /// The Nostr event object.
 #[derive(Debug)]
@@ -88,15 +88,19 @@ impl Event {
     }
 
     /// Serialize as JSON.
-    pub fn serialize(&self) -> Result<String, Error> {
-        let json = serde_json::to_string(self)?;
+    pub fn serialize(&self) -> Result<Value, Error> {
+        let json = serde_json::to_value(self)?;
 
         Ok(json)
     }
 
     /// Deserialize from JSON.
-    pub fn deserialize(data: &[u8]) -> Result<Self, Error> {
-        let event = serde_json::from_slice(data)?;
+    pub fn deserialize<T>(data: T) -> Result<Self, Error>
+    where
+        T: Into<serde_json::Value>,
+    {
+        let value = data.into();
+        let event = serde_json::from_value(value)?;
 
         Ok(event)
     }
@@ -105,7 +109,13 @@ impl Event {
 impl UnsignedEvent {
     /// Create a unsigned event.
     fn new(pubkey: [u8; 32], created_at: i64, kind: Kind, tags: Vec<Tag>, content: String) -> Self {
-        Self { pubkey, created_at, kind, tags, content }
+        Self {
+            pubkey,
+            created_at,
+            kind,
+            tags,
+            content,
+        }
     }
 
     /// Create an unsigned event from a signed event.

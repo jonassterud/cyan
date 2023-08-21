@@ -1,6 +1,7 @@
 //! Custom serialization / deserialization of [`Message`].
 
 use super::Message;
+use crate::types::Event;
 use serde::de::Visitor;
 use serde::{de, ser::SerializeSeq, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
@@ -15,8 +16,9 @@ impl Serialize for Message {
         let mut state = serializer.serialize_seq(None)?;
 
         match self {
-            Message::EVENT { event } => {
+            Message::EVENT { subscription_id, event } => {
                 state.serialize_element("EVENT")?;
+                state.serialize_element(subscription_id)?;
                 state.serialize_element(event)?;
             }
             Message::REQ { subscription_id, filters } => {
@@ -66,7 +68,8 @@ impl<'de> Visitor<'de> for MessageVisitor {
         if let Some(message_type) = seq.next_element::<String>()? {
             match message_type.as_str() {
                 "EVENT" => Ok(Message::EVENT {
-                    event: seq.next_element()?.ok_or(de::Error::missing_field("event"))?,
+                    subscription_id: seq.next_element::<String>()?.ok_or(de::Error::missing_field("subscription_id"))?,
+                    event: Event::deserialize(seq.next_element::<serde_json::Value>()?.ok_or(de::Error::missing_field("event"))?).map_err(de::Error::custom)?,
                 }),
                 "REQ" => Ok(Message::REQ {
                     subscription_id: seq.next_element()?.ok_or(de::Error::missing_field("subscription_id"))?,
