@@ -8,7 +8,7 @@ use crate::prelude::*;
 
 pub type SUBSCRIPTION_ID = String;
 
-/// The differente messages a client can send or receive.
+/// The different messages a client can send or receive.
 #[derive(Debug)]
 pub enum Message {
     EVENT { subscription_id: SUBSCRIPTION_ID, event: event::Event },
