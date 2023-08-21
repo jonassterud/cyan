@@ -55,15 +55,15 @@ impl<'de> Visitor<'de> for EventVisitor {
         let mut content: Option<String> = None;
         let mut sig: Option<String> = None;
 
-        while let Some(key) = map.next_key()? {
-            match key {
-                "id" => id.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("id")))?,
-                "pubkey" => pubkey.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("pubkey")))?,
-                "created_at" => created_at.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("created_at")))?,
-                "kind" => kind.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("kind")))?,
-                "tags" => tags.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("tags")))?,
-                "content" => content.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("content")))?,
-                "sig" => sig.replace(map.next_value()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("sig")))?,
+        while let Some(key) = map.next_key::<String>()? {
+            match key.as_str() {
+                "id" => id.replace(map.next_value::<String>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("id")))?,
+                "pubkey" => pubkey.replace(map.next_value::<String>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("pubkey")))?,
+                "created_at" => created_at.replace(map.next_value::<i64>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("created_at")))?,
+                "kind" => kind.replace(map.next_value::<i32>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("kind")))?,
+                "tags" => tags.replace(map.next_value::<Vec<Tag>>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("tags")))?,
+                "content" => content.replace(map.next_value::<String>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("content")))?,
+                "sig" => sig.replace(map.next_value::<String>()?).map_or_else(|| Ok(()), |_| Err(de::Error::duplicate_field("sig")))?,
                 _ => panic!(),
             }
         }
@@ -102,7 +102,6 @@ impl<'de> Deserialize<'de> for Event {
         D: Deserializer<'de>,
     {
         const FIELDS: &'static [&'static str] = &["id", "pubkey", "created_at", "kind", "tags", "content", "sig"];
-
         deserializer.deserialize_struct("Event", FIELDS, EventVisitor)
     }
 }
