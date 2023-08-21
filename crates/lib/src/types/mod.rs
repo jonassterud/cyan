@@ -2,6 +2,8 @@
 
 mod event;
 mod tag;
+mod kind;
 
 pub use event::*;
 pub use tag::*;
+pub use kind::*;

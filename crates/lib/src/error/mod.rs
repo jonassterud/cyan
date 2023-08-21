@@ -13,4 +13,6 @@ pub enum Error {
     ExpectedFound { expected: String, found: String },
     #[error("decoding hex failed")]
     FromHex(#[from] hex::FromHexError),
+    #[error("something went wrong: {0}")]
+    Custom(String)
 }

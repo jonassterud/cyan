@@ -4,7 +4,7 @@ use cyan_lib::prelude::*;
 fn create_example_event(secret_key: &str) -> Result<Event> {
     let secret_key = hex::decode(secret_key)?;
     let client = Client::from_secret_key(&secret_key)?;
-    let event = client.create_event(1692452942, 1, vec![], "this is a test".to_string())?;
+    let event = client.create_event(1692452942, Kind::TextNote, vec![], "this is a test".to_string())?;
 
     Ok(event)
 }

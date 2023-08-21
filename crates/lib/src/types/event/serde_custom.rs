@@ -6,6 +6,7 @@
 //! macros and such in order to deserialize/serialize.
 
 use super::Event;
+use crate::types::{Tag, Kind};
 use arrayref::array_ref;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, SerializeStruct, Serializer};
@@ -50,7 +51,7 @@ impl<'de> Visitor<'de> for EventVisitor {
         let mut pubkey: Option<String> = None;
         let mut created_at: Option<i64> = None;
         let mut kind: Option<i32> = None;
-        let mut tags = None;
+        let mut tags: Option<Vec<Tag>> = None;
         let mut content: Option<String> = None;
         let mut sig: Option<String> = None;
 
@@ -87,7 +88,7 @@ impl<'de> Visitor<'de> for EventVisitor {
             id: *array_ref![decoded_id, 0, 32],
             pubkey: *array_ref![decoded_pubkey, 0, 32],
             created_at: created_at.ok_or_else(|| de::Error::missing_field("created_at"))?,
-            kind: kind.ok_or_else(|| de::Error::missing_field("kind"))?,
+            kind: Kind::try_from(kind.ok_or_else(|| de::Error::missing_field("kind"))?).map_err(de::Error::custom)?,
             tags: tags.ok_or_else(|| de::Error::missing_field("tags"))?,
             content: content.ok_or_else(|| de::Error::missing_field("content"))?,
             sig: *array_ref![decoded_sig, 0, 64],

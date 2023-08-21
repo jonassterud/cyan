@@ -1,6 +1,6 @@
 mod serde_custom;
 
-use crate::{error::Error, types::Tag};
+use crate::{error::Error, types::{Tag, Kind}};
 use secp256k1::{
     hashes::{sha256, Hash},
     schnorr::Signature,
@@ -18,7 +18,7 @@ pub struct Event {
     /// Unix timestamp in seconds,
     pub created_at: i64,
     /// Event kind.
-    pub kind: i32,
+    pub kind: Kind,
     /// List of tags.
     pub tags: Vec<Tag>,
     /// Arbitrary string.
@@ -34,7 +34,7 @@ struct UnsignedEvent {
     /// Unix timestamp in seconds,
     pub created_at: i64,
     /// Event kind.
-    pub kind: i32,
+    pub kind: Kind,
     /// List of tags.
     pub tags: Vec<Tag>,
     /// Arbitrary string.
@@ -43,7 +43,7 @@ struct UnsignedEvent {
 
 impl Event {
     /// Create a signed event.
-    pub fn try_new(keys: &KeyPair, pubkey: [u8; 32], created_at: i64, kind: i32, tags: Vec<Tag>, content: String) -> Result<Self, Error> {
+    pub fn try_new(keys: &KeyPair, pubkey: [u8; 32], created_at: i64, kind: Kind, tags: Vec<Tag>, content: String) -> Result<Self, Error> {
         let unsigned_event = UnsignedEvent::new(pubkey, created_at, kind, tags, content);
         let id = unsigned_event.get_id();
         let sig = unsigned_event.get_sig(&id, keys)?;
@@ -101,7 +101,7 @@ impl Event {
 
 impl UnsignedEvent {
     /// Create a unsigned event.
-    fn new(pubkey: [u8; 32], created_at: i64, kind: i32, tags: Vec<Tag>, content: String) -> Self {
+    fn new(pubkey: [u8; 32], created_at: i64, kind: Kind, tags: Vec<Tag>, content: String) -> Self {
         Self { pubkey, created_at, kind, tags, content }
     }
 
@@ -110,7 +110,7 @@ impl UnsignedEvent {
         Self {
             pubkey: event.pubkey,
             created_at: event.created_at,
-            kind: event.kind,
+            kind: event.kind.clone(),
             tags: event.tags.clone(),
             content: event.content.clone(),
         }
