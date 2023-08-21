@@ -6,7 +6,7 @@
 //! macros and such in order to deserialize/serialize.
 
 use super::Event;
-use crate::types::{Tag, Kind};
+use crate::types::{Kind, Tag};
 use arrayref::array_ref;
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use serde::ser::{Serialize, SerializeStruct, Serializer};

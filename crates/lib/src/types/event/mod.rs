@@ -1,6 +1,9 @@
 mod serde_custom;
 
-use crate::{error::Error, types::{Tag, Kind}};
+use crate::{
+    error::Error,
+    types::{Kind, Tag},
+};
 use secp256k1::{
     hashes::{sha256, Hash},
     schnorr::Signature,

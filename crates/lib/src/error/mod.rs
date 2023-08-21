@@ -14,5 +14,5 @@ pub enum Error {
     #[error("decoding hex failed")]
     FromHex(#[from] hex::FromHexError),
     #[error("something went wrong: {0}")]
-    Custom(String)
+    Custom(String),
 }

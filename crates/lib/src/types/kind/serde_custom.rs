@@ -1,9 +1,9 @@
 //! Custom serialization / deserialization of [`Kind`].
 
 use super::Kind;
-use std::fmt;
 use serde::de::Visitor;
-use serde::{Serialize, Serializer, de, Deserialize, Deserializer};
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 // Serialization
 

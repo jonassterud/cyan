@@ -1,9 +1,11 @@
 //! Data types used in the Nostr protocol.
 
 mod event;
-mod tag;
 mod kind;
+mod message;
+mod tag;
 
 pub use event::*;
-pub use tag::*;
 pub use kind::*;
+pub use message::*;
+pub use tag::*;

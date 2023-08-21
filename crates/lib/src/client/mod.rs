@@ -1,6 +1,6 @@
 //! The user client.
 
-use crate::prelude::{Error, Event, Tag, Kind};
+use crate::prelude::{Error, Event, Kind, Tag};
 use arrayref::array_ref;
 use secp256k1::{rand, KeyPair, Secp256k1};
 
