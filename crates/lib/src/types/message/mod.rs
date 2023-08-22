@@ -2,10 +2,12 @@
 
 #![allow(non_camel_case_types)]
 
-mod serde;
+mod custom_serde;
+mod filter;
 
 use crate::prelude::*;
 
+pub use filter::Filter;
 pub type SUBSCRIPTION_ID = String;
 
 /// The different messages a client can send or receive.

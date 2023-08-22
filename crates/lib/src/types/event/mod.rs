@@ -2,8 +2,8 @@
 
 #![allow(non_camel_case_types)]
 
+mod custom_serde;
 mod kind;
-mod serde;
 mod tag;
 
 use crate::prelude::*;
@@ -12,7 +12,7 @@ use secp256k1::{
     schnorr::Signature,
     KeyPair, Secp256k1, XOnlyPublicKey,
 };
-use serde_json::{json, Value};
+use serde_json::json;
 
 pub use kind::Kind;
 pub use tag::Tag;
@@ -20,7 +20,7 @@ pub type ID = [u8; 32];
 pub type PUBKEY = [u8; 32];
 pub type CREATED_AT = i64;
 pub type KIND = Kind;
-pub type TAGS = Vec<Tag>;
+pub type TAG = Tag;
 pub type CONTENT = String;
 pub type SIG = [u8; 64];
 
@@ -36,7 +36,7 @@ pub struct Event {
     /// Event kind.
     pub kind: KIND,
     /// List of tags.
-    pub tags: TAGS,
+    pub tags: Vec<TAG>,
     /// Arbitrary string.
     pub content: CONTENT,
     /// 64-bytes hex of the signature of the sha256 hash of the serialized event data.
@@ -52,14 +52,14 @@ struct UnsignedEvent {
     /// Event kind.
     pub kind: KIND,
     /// List of tags.
-    pub tags: TAGS,
+    pub tags: Vec<TAG>,
     /// Arbitrary string.
     pub content: CONTENT,
 }
 
 impl Event {
     /// Create a signed event.
-    pub fn try_new(keys: &KeyPair, pubkey: PUBKEY, created_at: CREATED_AT, kind: KIND, tags: TAGS, content: CONTENT) -> Result<Self, Error> {
+    pub fn try_new(keys: &KeyPair, pubkey: PUBKEY, created_at: CREATED_AT, kind: KIND, tags: Vec<TAG>, content: CONTENT) -> Result<Self, Error> {
         let unsigned_event = UnsignedEvent::new(pubkey, created_at, kind, tags, content);
         let id = unsigned_event.get_id();
         let sig = unsigned_event.get_sig(&id, keys)?;
@@ -101,7 +101,7 @@ impl Event {
     }
 
     /// Serialize as JSON.
-    pub fn serialize(&self) -> Result<Value, Error> {
+    pub fn serialize(&self) -> Result<serde_json::Value, Error> {
         let json = serde_json::to_value(self)?;
 
         Ok(json)
@@ -121,7 +121,7 @@ impl Event {
 
 impl UnsignedEvent {
     /// Create a unsigned event.
-    fn new(pubkey: PUBKEY, created_at: CREATED_AT, kind: KIND, tags: TAGS, content: CONTENT) -> Self {
+    fn new(pubkey: PUBKEY, created_at: CREATED_AT, kind: KIND, tags: Vec<Tag>, content: CONTENT) -> Self {
         Self {
             pubkey,
             created_at,

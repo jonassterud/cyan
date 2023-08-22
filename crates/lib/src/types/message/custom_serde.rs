@@ -106,3 +106,12 @@ impl<'de> Deserialize<'de> for Message {
         deserializer.deserialize_seq(MessageVisitor)
     }
 }
+
+// Serialization of Tag in Filter
+
+pub fn serialize_tags_in_filter<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    todo!()
+}

@@ -14,3 +14,9 @@ fn test_serde() {
 
     dbg!(serialized, deserialized);
 }
+
+#[test]
+fn some_test() {
+    let t = message::Filter::new().limit::<i64>(10);
+    println!("{:?}", t.serialize());
+}
