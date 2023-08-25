@@ -177,9 +177,20 @@ impl<'de> Visitor<'de> for TagVisitor {
         let variant: &str = seq.next_element()?.ok_or_else(|| de::Error::custom("missing tag variant"))?;
 
         match variant {
+            "e" => {
+                let event_id = seq.next_element()?.ok_or_else(|| de::Error::missing_field("event_id"))?;
+                let relay_url = seq.next_element()?;
+
+                Ok(Tag::E { event_id, relay_url })
+            }
+            "p" => {
+                let pubkey = seq.next_element()?.ok_or_else(|| de::Error::missing_field("pubkey"))?;
+                let relay_url = seq.next_element()?;
+
+                Ok(Tag::P { pubkey, relay_url })
+            }
             _ => {
                 let mut data = String::new();
-
                 while let Ok(Some(next_value)) = seq.next_element::<&str>() {
                     data += next_value;
                 }
