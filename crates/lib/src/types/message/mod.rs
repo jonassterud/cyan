@@ -8,16 +8,15 @@ mod filter;
 use crate::prelude::*;
 
 pub use filter::Filter;
-pub type SUBSCRIPTION_ID = String;
 
 /// The different messages a client can send or receive.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Message {
-    EVENT { subscription_id: SUBSCRIPTION_ID, event: event::Event },
-    REQ { subscription_id: SUBSCRIPTION_ID, filters: String },
-    CLOSE { subscription_id: SUBSCRIPTION_ID },
+    EVENT { subscription_id: subscription::ID, event: event::Event },
+    REQ { subscription_id: subscription::ID, filters: Vec<Filter> },
+    CLOSE { subscription_id: subscription::ID },
     OK { event_id: event::ID, status: bool, message: String },
-    EOSE { subscription_id: SUBSCRIPTION_ID },
+    EOSE { subscription_id: subscription::ID },
     NOTICE { message: String },
 }
 

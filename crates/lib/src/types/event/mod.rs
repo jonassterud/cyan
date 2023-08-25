@@ -25,7 +25,7 @@ pub type CONTENT = String;
 pub type SIG = [u8; 64];
 
 /// The Nostr event object.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Event {
     /// 32-bytes lowercase hex-encoded sha256 of the serialized event data.
     pub id: ID,
