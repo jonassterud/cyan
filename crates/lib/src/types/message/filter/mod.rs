@@ -2,26 +2,16 @@
 
 mod traits;
 
-use super::custom_serde::serialize_tags_in_filter;
 use crate::prelude::*;
-use serde::Serialize;
 use traits::UpdateField;
 
 /// Used to filter events.
-#[serde_with::skip_serializing_none]
-#[derive(Serialize)]
+#[derive(Debug, Clone)]
 pub struct Filter {
     pub ids: Option<Vec<event::ID>>,
     pub authors: Option<Vec<event::PUBKEY>>,
     pub kinds: Option<Vec<event::KIND>>,
-    #[serde(serialize_with = "serialize_tags_in_filter")]
     pub tags: Option<Vec<event::TAG>>,
-    /*
-    #[serde(rename = "#e")]
-    pub e: Option<Vec<event::TAG>>,
-    #[serde(rename = "#p")]
-    pub p: Option<Vec<event::Tag>>,
-     */
     pub since: Option<event::CREATED_AT>,
     pub until: Option<event::CREATED_AT>,
     pub limit: Option<i64>,
@@ -48,37 +38,37 @@ impl Filter {
         Ok(json)
     }
 
-    pub fn ids<T>(mut self, new: Vec<event::ID>) -> Self {
+    pub fn ids(mut self, new: Vec<event::ID>) -> Self {
         Self::update_field(&mut self.ids, new);
         self
     }
 
-    pub fn authors<T>(mut self, new: Vec<event::PUBKEY>) -> Self {
+    pub fn authors(mut self, new: Vec<event::PUBKEY>) -> Self {
         Self::update_field(&mut self.authors, new);
         self
     }
 
-    pub fn kinds<T>(mut self, new: Vec<event::KIND>) -> Self {
+    pub fn kinds(mut self, new: Vec<event::KIND>) -> Self {
         Self::update_field(&mut self.kinds, new);
         self
     }
 
-    pub fn tags<T>(mut self, new: Vec<event::TAG>) -> Self {
+    pub fn tags(mut self, new: Vec<event::TAG>) -> Self {
         Self::update_field(&mut self.tags, new);
         self
     }
 
-    pub fn since<T>(mut self, new: event::CREATED_AT) -> Self {
+    pub fn since(mut self, new: event::CREATED_AT) -> Self {
         Self::update_field(&mut self.since, new);
         self
     }
 
-    pub fn until<T>(mut self, new: event::CREATED_AT) -> Self {
+    pub fn until(mut self, new: event::CREATED_AT) -> Self {
         Self::update_field(&mut self.until, new);
         self
     }
 
-    pub fn limit<T>(mut self, new: i64) -> Self {
+    pub fn limit(mut self, new: i64) -> Self {
         Self::update_field(&mut self.limit, new);
         self
     }

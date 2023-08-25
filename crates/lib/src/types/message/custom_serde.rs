@@ -1,10 +1,10 @@
 //! Custom serialization / deserialization.
 
-use super::Message;
+use super::{Filter, Message};
 use crate::prelude::*;
 
 use serde::de::{self, Deserialize, Deserializer, Visitor};
-use serde::ser::{Serialize, SerializeSeq, Serializer};
+use serde::ser::{Serialize, SerializeSeq, SerializeStruct, Serializer};
 use std::fmt;
 
 struct MessageVisitor;
@@ -72,10 +72,19 @@ impl<'de> Visitor<'de> for MessageVisitor {
                     subscription_id: seq.next_element::<String>()?.ok_or(de::Error::missing_field("subscription_id"))?,
                     event: event::Event::deserialize(seq.next_element::<serde_json::Value>()?.ok_or(de::Error::missing_field("event"))?).map_err(de::Error::custom)?,
                 }),
-                "REQ" => Ok(Message::REQ {
-                    subscription_id: seq.next_element()?.ok_or(de::Error::missing_field("subscription_id"))?,
-                    filters: seq.next_element()?.ok_or(de::Error::missing_field("filters"))?,
-                }),
+                "REQ" => {
+                    todo!("deserialize filters");
+                    /*
+                        let subscription_id = seq.next_element()?.ok_or(de::Error::missing_field("subscription_id"))?;
+                        let mut filters = Vec::new();
+
+                        while let Some(filter) = seq.next_element()? {
+                            filters.push(filter)
+                        }
+
+                        Ok(Message::REQ { subscription_id, filters })
+                    */
+                }
                 "CLOSE" => Ok(Message::CLOSE {
                     subscription_id: seq.next_element()?.ok_or(de::Error::missing_field("subscription_id"))?,
                 }),
@@ -107,11 +116,63 @@ impl<'de> Deserialize<'de> for Message {
     }
 }
 
-// Serialization of Tag in Filter
+// Serialization of Filter
 
-pub fn serialize_tags_in_filter<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-{
-    todo!()
+impl Serialize for Filter {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("Filter", 7)?;
+
+        fn serialize_if_some<S, V>(state: &mut S, k: &'static str, v: Option<&V>) -> Result<(), S::Error>
+        where
+            S: serde::ser::SerializeStruct,
+            V: Serialize,
+        {
+            if let Some(v) = v {
+                state.serialize_field(k, v)?;
+            }
+
+            Ok(())
+        }
+
+        fn serialize_tags_if_some<S>(state: &mut S, tags: Option<&Vec<event::Tag>>) -> Result<(), S::Error>
+        where
+            S: serde::ser::SerializeStruct,
+        {
+            if let Some(tags) = tags {
+                let mut e_tags = Vec::new();
+                let mut p_tags = Vec::new();
+
+                for tag in tags {
+                    match tag {
+                        event::Tag::E { event_id, .. } => e_tags.push(event_id),
+                        event::Tag::P { pubkey, .. } => p_tags.push(pubkey),
+                        _ => panic!("can't serialize tag"),
+                    }
+                }
+
+                if !e_tags.is_empty() {
+                    state.serialize_field("#e", &e_tags)?;
+                }
+
+                if !p_tags.is_empty() {
+                    state.serialize_field("#p", &p_tags)?;
+                }
+            }
+
+            Ok(())
+        }
+
+        serialize_if_some(&mut state, "ids", self.ids.as_ref())?;
+        serialize_if_some(&mut state, "authors", self.authors.as_ref())?;
+        serialize_if_some(&mut state, "kinds", self.kinds.as_ref())?;
+        serialize_tags_if_some(&mut state, self.tags.as_ref())?;
+        serialize_if_some(&mut state, "since", self.since.as_ref())?;
+        serialize_if_some(&mut state, "until", self.until.as_ref())?;
+        serialize_if_some(&mut state, "limit", self.limit.as_ref())?;
+
+        state.end()
+    }
 }
