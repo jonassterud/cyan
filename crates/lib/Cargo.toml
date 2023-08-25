@@ -9,7 +9,9 @@ edition.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+rand = { workspace = true, features = [] }
 tokio = { workspace = true, features = [] }
+tokio-tungstenite = { workspace = true, features = ["rustls-tls-webpki-roots"] }
 serde = { workspace = true, features = ["derive"] }
 serde_with = { workspace = true, features = [] }
 serde_json = { workspace = true, features = [] }

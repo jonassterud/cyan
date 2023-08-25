@@ -1,3 +1,5 @@
+use crate::prelude::*;
+
 /// Error type.
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -13,6 +15,10 @@ pub enum Error {
     ExpectedFound { expected: String, found: String },
     #[error("decoding hex failed")]
     FromHex(#[from] hex::FromHexError),
+    #[error("websocket failed")]
+    Tungstenite(#[from] tokio_tungstenite::tungstenite::Error),
+    #[error("broadcast failed")]
+    Broadcast(#[from] tokio::sync::broadcast::error::SendError<message::Message>),
     #[error("something went wrong: {0}")]
     Custom(String),
 }
